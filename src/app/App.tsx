@@ -14,7 +14,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import {Menu} from '@mui/icons-material';
 import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
 import {Login} from "../features/Login/Login";
-import {Navigate, Route, Routes} from 'react-router-dom'
+import {Navigate, Route, Routes, useNavigate} from 'react-router-dom'
 import {authAPI} from "../api/todolists-api";
 import CircularProgress from "@mui/material/CircularProgress";
 import {logoutTC} from "../features/Login/authReducer";
@@ -31,12 +31,18 @@ function App({demo = false}: PropsType) {
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
 
     useEffect(() => {
         dispatch(initializeAppTC())
-
     }, [])
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('login')
+        }
+    }, [isLoggedIn])
 
     const logoutHandler = useCallback(function () {
         dispatch(logoutTC())
@@ -48,7 +54,6 @@ function App({demo = false}: PropsType) {
             <CircularProgress/>
         </div>
     }
-
 
     return (
         <div className="App">
