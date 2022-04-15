@@ -1,6 +1,6 @@
 import {todolistsAPI, TodolistType} from '../../api/todolists-api'
 import {Dispatch} from 'redux'
-import {RequestStatusType, SetAppErrorActionType, setAppStatus, SetAppStatusActionType} from '../../app/app-reducer'
+import {RequestStatusType, setAppStatus} from '../../app/app-reducer'
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const initialState: Array<TodolistDomainType> = []
@@ -9,36 +9,38 @@ const slice = createSlice({
     name: 'todolists',
     initialState: initialState,
     reducers: {
-        removeTodolist(state, action: PayloadAction<{id: string}>) {
+        removeTodolist(state, action: PayloadAction<{ id: string }>) {
             const index = state.findIndex(tl => tl.id === action.payload.id)
             if (index > -1) {
                 state.splice(index, 1)
             }
         },
-        addTodolist(state, action: PayloadAction<{todolist: TodolistType}>) {
+        addTodolist(state, action: PayloadAction<{ todolist: TodolistType }>) {
             state.unshift({...action.payload.todolist, filter: 'all', entityStatus: 'idle'})
         },
-        changeTodolistTitle(state, action: PayloadAction<{id: string, title: string}>) {
+        changeTodolistTitle(state, action: PayloadAction<{ id: string, title: string }>) {
             const index = state.findIndex(tl => tl.id === action.payload.id)
             state[index].title = action.payload.title
         },
-        changeTodolistFilter(state, action: PayloadAction<{id: string, filter: FilterValuesType}>) {
+        changeTodolistFilter(state, action: PayloadAction<{ id: string, filter: FilterValuesType }>) {
             const index = state.findIndex(tl => tl.id === action.payload.id)
             state[index].filter = action.payload.filter
         },
-        changeTodolistEntityStatus(state, action: PayloadAction<{id: string, status: RequestStatusType}>) {
+        changeTodolistEntityStatus(state, action: PayloadAction<{ id: string, status: RequestStatusType }>) {
             const index = state.findIndex(tl => tl.id === action.payload.id)
             state[index].entityStatus = action.payload.status
         },
-        setTodolists(state, action: PayloadAction<{todolists: Array<TodolistType>}>) {
+        setTodolists(state, action: PayloadAction<{ todolists: Array<TodolistType> }>) {
             return action.payload.todolists.map(tl => ({...tl, filter: 'all', entityStatus: 'idle'}))
         }
     }
 })
 
 export const todolistsReducer = slice.reducer
-export const {removeTodolist, addTodolist, changeTodolistTitle, changeTodolistFilter,
-    changeTodolistEntityStatus, setTodolists} = slice.actions
+export const {
+    removeTodolist, addTodolist, changeTodolistTitle, changeTodolistFilter,
+    changeTodolistEntityStatus, setTodolists
+} = slice.actions
 
 
 // thunks
@@ -85,14 +87,9 @@ export const changeTodolistTitleTC = (id: string, title: string) => {
     }
 }
 
-// types
-export type AddTodolistActionType = ReturnType<typeof addTodolist>;
-export type RemoveTodolistActionType = ReturnType<typeof removeTodolist>;
-export type SetTodolistsActionType = ReturnType<typeof setTodolists>;
-
 export type FilterValuesType = 'all' | 'active' | 'completed';
 export type TodolistDomainType = TodolistType & {
     filter: FilterValuesType
     entityStatus: RequestStatusType
 }
-type ThunkDispatch = Dispatch<SetAppStatusActionType>
+// type ThunkDispatch = Dispatch<SetAppStatusActionType>
