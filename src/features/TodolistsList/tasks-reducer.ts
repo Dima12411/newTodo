@@ -24,7 +24,7 @@ const slice = createSlice({
             }
         },
         addTask(state, action: PayloadAction<{ task: TaskType }>) {
-            state[action.payload.task.todoListId].unshift(action.payload.task)
+            state[action.payload.task.todolistId].unshift(action.payload.task)
         },
         updateTask(state, action: PayloadAction<{ taskId: string, model: UpdateDomainTaskModelType, todolistId: string }>) {
             const tasks = state[action.payload.todolistId]
